@@ -1,10 +1,12 @@
 import { Box, createTheme, ThemeProvider } from '@mui/material';
-import type { JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import { Outlet } from 'react-router-dom';
 import DiagonalBackground from '../components/ui/DiagonalBackground';
 import { ToastContainer } from 'react-toastify';
-import Header from '../components/layout/Header';
 import Container from '../components/layout/Container';
+import { useDispatch } from 'react-redux';
+import { useGetBooksQuery } from '../app/services/bookApi';
+import { setIsAuthenticated } from '../app/features/auth/auth.slice';
 
 const MainLayout = (): JSX.Element => {
     const theme = createTheme({
@@ -20,13 +22,21 @@ const MainLayout = (): JSX.Element => {
             success: { main: '#388e3c' },
         }
     })
+
+    const dispatch = useDispatch()
+    const token = localStorage.getItem('authToken');
+    const { isLoading, isError} = useGetBooksQuery(undefined, {skip : !token})
+
+    useEffect(() => {
+        if(token) {
+            dispatch(setIsAuthenticated(!isError))
+        }
+    }, [isError])
+
     return (
         <ThemeProvider theme={theme}>
             <Container>
-                <Header />
-                <Box mt={"20px"}>
-                    <Outlet />
-                </Box>
+                {isLoading ? <Box fontSize={"30px"} color={"gray"} height={"100vh"} display={"flex"} justifyContent={"center"} alignItems={"center"} fontWeight={"800"}>Loading...</Box> : <Outlet />}
             </Container>
 
             <DiagonalBackground />

@@ -1,41 +1,24 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface IAuthState {
   isAuthenticated: boolean;
-  authLoading: boolean;
 }
 
 const initialState: IAuthState = {
-  isAuthenticated: true,
-  authLoading: true,
+  isAuthenticated: false,
 };
 
-export const checkIsAuthenticated = createAsyncThunk(
-  "auth/checkIsAuthenticated",
-  async (_, thunkAPI) => {
-    const token = localStorage.getItem("authToken");
-    return !!token; // true yoki false qaytaradi
-  }
-);
 
 const authSlice = createSlice({
   name: "authSlice",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(checkIsAuthenticated.pending, (state) => {
-        state.authLoading = true;
-      })
-      .addCase(checkIsAuthenticated.fulfilled, (state, action) => {
-        state.isAuthenticated = action.payload;
-        state.authLoading = false;
-      })
-      .addCase(checkIsAuthenticated.rejected, (state) => {
-        state.isAuthenticated = false;
-        state.authLoading = false;
-      });
-  },
+  reducers: {
+    setIsAuthenticated : (state, action:PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload
+    }
+  }
 });
 
+
+export const {setIsAuthenticated} = authSlice.actions
 export default authSlice.reducer;

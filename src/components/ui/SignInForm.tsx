@@ -9,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { checkIsAuthenticated } from '../../app/features/auth/auth.slice';
 import type { AppDispatch } from '../../app/store';
+import { setIsAuthenticated } from '../../app/features/auth/auth.slice';
 
 const SignInForm = (): JSX.Element => {
     const dispatch = useDispatch<AppDispatch>()
@@ -23,7 +23,7 @@ const SignInForm = (): JSX.Element => {
 
     const {
         register,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         handleSubmit,
         reset,
         setValue
@@ -37,10 +37,9 @@ const SignInForm = (): JSX.Element => {
         try {
             const body = { userName: data.userName, password: data.password }
             const res = await axios.post("https://bookshelf-api-production-b818.up.railway.app/api/users/login", body)
-            console.log(res.data.token)
             localStorage.setItem("authToken", res.data.token)
             showSuccessToast("You have successfully logged in")
-            dispatch(checkIsAuthenticated())
+            dispatch(setIsAuthenticated(true))
             reset()
             navigate("/")
         } catch (error: unknown) {
@@ -80,7 +79,7 @@ const SignInForm = (): JSX.Element => {
                         sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your password' id='password' size='small' />
                     <FormHelperText sx={{ margin: 0, minHeight: "20px" }}>{errors.password?.message}</FormHelperText>
                 </FormControl>
-                <Button type="submit" variant="contained" sx={{ mt: "10px" }}>
+                <Button disabled={isSubmitting} type="submit" variant="contained" sx={{ mt: "10px" }}>
                     Sign in
                 </Button>
                 <Typography variant="subtitle1" color="initial" sx={{ textAlign: "center", fontSize: "14px" }}>

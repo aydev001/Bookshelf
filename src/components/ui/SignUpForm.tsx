@@ -25,7 +25,7 @@ const SignUpForm = (): JSX.Element => {
 
     const {
         register,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         handleSubmit,
         reset,
         setValue
@@ -96,7 +96,7 @@ const SignUpForm = (): JSX.Element => {
                         sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your confirm password' id='confirm-password' size='small' />
                     <FormHelperText sx={{ margin: 0, minHeight: "20px" }}>{errors.confirmPassword?.message}</FormHelperText>
                 </FormControl>
-                <Button type="submit" variant="contained" sx={{ mt: "10px" }}>
+                <Button disabled={isSubmitting} type="submit" variant="contained" sx={{ mt: "10px" }}>
                     Submit
                 </Button>
                 <Typography variant="subtitle1" color="initial" sx={{ textAlign: "center", fontSize: "14px" }}>
