@@ -1,8 +1,10 @@
-import { createTheme, ThemeProvider } from '@mui/material';
+import { Box, createTheme, ThemeProvider } from '@mui/material';
 import type { JSX } from 'react';
 import { Outlet } from 'react-router-dom';
 import DiagonalBackground from '../components/ui/DiagonalBackground';
 import { ToastContainer } from 'react-toastify';
+import Header from '../components/layout/Header';
+import Container from '../components/layout/Container';
 
 const MainLayout = (): JSX.Element => {
     const theme = createTheme({
@@ -20,9 +22,15 @@ const MainLayout = (): JSX.Element => {
     })
     return (
         <ThemeProvider theme={theme}>
+            <Container>
+                <Header />
+                <Box mt={"20px"}>
+                    <Outlet />
+                </Box>
+            </Container>
+
             <DiagonalBackground />
-            <Outlet />
-            <ToastContainer/>
+            <ToastContainer />
         </ThemeProvider>
     );
 };

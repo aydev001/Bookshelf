@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 import type { JSX } from 'react';
-import notFountImage from "../assets/images/undraw_page_not_found_re_e9o6 1.svg"
+import notFountImage from "../assets/images/404.svg"
 import { useNavigate } from 'react-router-dom';
 
 const NotFoundPage = (): JSX.Element => {

@@ -6,7 +6,8 @@ import { setSignUpPage } from '../../app/features/ui/ui.slice';
 import { useForm, type FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { showSuccessToast } from '../../utils/toast';
+import { showErrorToast, showSuccessToast } from '../../utils/toast';
+import axios from "axios"
 
 const SignUpForm = (): JSX.Element => {
     const dispatch = useDispatch()
@@ -16,8 +17,8 @@ const SignUpForm = (): JSX.Element => {
         password: z.string().nonempty("Password is required").min(6, "Minimum 6 characters").max(20, "Maximum 20 characters"),
         confirmPassword: z.string().nonempty("Confirm password is required").min(6, "Minimum 6 characters").max(20, "Maximum 20 characters")
     }).refine((data) => data.password === data.confirmPassword, {
-        message : "Passwords must match",
-        path : ["confirmPassword"]
+        message: "Passwords must match",
+        path: ["confirmPassword"]
     })
 
     type TValidationSchema = z.infer<typeof validationSchema>
@@ -33,23 +34,33 @@ const SignUpForm = (): JSX.Element => {
     })
 
     const onSubmit = async (data: FieldValues) => {
-        console.log(data)
-        showSuccessToast("Successful registration")
-        reset()
+        try {
+            const body = { userName: data.userName, password: data.password }
+            await axios.post("https://bookshelf-api-production-b818.up.railway.app/api/users/register", body)
+            showSuccessToast("Successful registration")
+            reset()
+            dispatch(setSignUpPage(false))
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(error.response?.data.message)
+            } else {
+                console.error("Error:", error);
+            }
+        }
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Box display={"flex"} flexDirection={"column"} gap={"15px"}>
+            <Box display={"flex"} flexDirection={"column"} gap={"10px"}>
                 <Typography variant="h5" color="#151515" mb={"10px"} fontSize={"24px"} fontWeight={"700"} textAlign={"center"}>
                     Sign up
                 </Typography>
-                <FormControl fullWidth error={errors.userName?.message? true : false}>
+                <FormControl fullWidth error={errors.userName?.message ? true : false}>
                     <FormLabel htmlFor='user-name' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Username</FormLabel>
                     <OutlinedInput {...register("userName")} sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your name' id='user-name' size='small' />
-                    <FormHelperText sx={{ margin: 0, minHeight : "10px" }}>{errors.userName?.message}</FormHelperText>
+                    <FormHelperText sx={{ margin: 0, minHeight: "10px" }}>{errors.userName?.message}</FormHelperText>
                 </FormControl>
-                <FormControl fullWidth error={errors.password?.message? true : false}>
+                <FormControl fullWidth error={errors.password?.message ? true : false}>
                     <FormLabel htmlFor='password' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Password</FormLabel>
                     <OutlinedInput
                         {...register("password")}
@@ -58,16 +69,16 @@ const SignUpForm = (): JSX.Element => {
                                 <IconButton
                                     edge="end"
                                     size="small"
-                                    sx={{fontSize : "14px"}}
+                                    sx={{ fontSize: "14px" }}
                                     onClick={() => setValue("password", "")}
                                 >
                                     <CgClose />
                                 </IconButton>
                             </InputAdornment>}
                         sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your password' id='password' size='small' />
-                    <FormHelperText sx={{ margin: 0, minHeight : "20px" }}>{errors.password?.message}</FormHelperText>
+                    <FormHelperText sx={{ margin: 0, minHeight: "20px" }}>{errors.password?.message}</FormHelperText>
                 </FormControl>
-                <FormControl fullWidth error={errors.confirmPassword?.message? true : false}>
+                <FormControl fullWidth error={errors.confirmPassword?.message ? true : false}>
                     <FormLabel htmlFor='confirm-password' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Confirm password</FormLabel>
                     <OutlinedInput
                         {...register("confirmPassword")}
@@ -76,14 +87,14 @@ const SignUpForm = (): JSX.Element => {
                                 <IconButton
                                     edge="end"
                                     size="small"
-                                    sx={{fontSize : "14px"}}
+                                    sx={{ fontSize: "14px" }}
                                     onClick={() => setValue("confirmPassword", "")}
                                 >
                                     <CgClose />
                                 </IconButton>
                             </InputAdornment>}
                         sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your confirm password' id='confirm-password' size='small' />
-                    <FormHelperText sx={{ margin: 0, minHeight : "20px" }}>{errors.confirmPassword?.message}</FormHelperText>
+                    <FormHelperText sx={{ margin: 0, minHeight: "20px" }}>{errors.confirmPassword?.message}</FormHelperText>
                 </FormControl>
                 <Button type="submit" variant="contained" sx={{ mt: "10px" }}>
                     Submit

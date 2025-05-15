@@ -1,10 +1,11 @@
+import { Box } from '@mui/material';
 import type { JSX } from 'react';
 
 const Home = (): JSX.Element => {
   return (
-    <div>
+    <Box color={"white"}>
       Home
-    </div>
+    </Box>
   );
 };
 

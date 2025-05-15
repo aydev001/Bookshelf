@@ -5,7 +5,7 @@ interface UIState {
 }
 
 const initialState: UIState = {
-  isSignUpPage: true,
+  isSignUpPage: false,
 };
 
 

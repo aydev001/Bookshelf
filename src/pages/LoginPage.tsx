@@ -12,9 +12,7 @@ const LoginPage = (): JSX.Element => {
   return (
     <Box display={"flex"} justifyContent={"center"} alignItems={"center"} minHeight={"100vh"}>
       <Box bgcolor={"#FEFEFE"} borderRadius={"12px"} p={"28px"} width={"400px"} my={"10px"} mx={"5%"} boxShadow={"0px 4px 32px 0px #3333330A"}>
-
-        {isSignUpPage ? <SignUpForm /> : <SignInForm />
-        }
+        {isSignUpPage ? <SignUpForm /> : <SignInForm />}
       </Box>
     </Box>
   );
