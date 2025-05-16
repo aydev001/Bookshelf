@@ -68,7 +68,8 @@ const SignInForm = (): JSX.Element => {
                     <FormLabel htmlFor='password' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Password</FormLabel>
                     <OutlinedInput
                         {...register("password")}
-                        autoComplete='password'
+                        type="password"
+                        autoComplete="current-password"
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
