@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 import { CgClose } from 'react-icons/cg';
 import { useDispatch } from 'react-redux';
 import { setSignUpPage } from '../../app/features/ui/ui.slice';
-import { useForm, type FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
@@ -15,7 +15,7 @@ import { setIsAuthenticated } from '../../app/features/auth/auth.slice';
 const SignInForm = (): JSX.Element => {
     const dispatch = useDispatch<AppDispatch>()
     const validationSchema = z.object({
-        userName: z.string().nonempty("User name is required").min(3, "Minimum 3 characters").max(20, "Maximum 3 characters"),
+        username: z.string().nonempty("User name is required").min(3, "Minimum 3 characters").max(20, "Maximum 20 characters"),
         password: z.string().nonempty("Password is required").min(6, "Minimum 6 characters").max(20, "Maximum 20 characters")
     })
 
@@ -33,9 +33,9 @@ const SignInForm = (): JSX.Element => {
 
     const navigate = useNavigate()
 
-    const onSubmit = async (data: FieldValues) => {
+    const onSubmit = async (data: TValidationSchema) => {
         try {
-            const body = { userName: data.userName, password: data.password }
+            const body = { userName: data.username, password: data.password }
             const res = await axios.post("https://bookshelf-api-production-b818.up.railway.app/api/users/login", body)
             localStorage.setItem("authToken", res.data.token)
             showSuccessToast("You have successfully logged in")
@@ -44,27 +44,31 @@ const SignInForm = (): JSX.Element => {
             navigate("/")
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-                showErrorToast(error.response?.data.message)
+                showErrorToast(error.response?.data.message || "Something went wrong. Please try again.");
             } else {
                 console.error("Error:", error);
             }
         }
     }
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
             <Box display={"flex"} flexDirection={"column"} gap={"10px"}>
                 <Typography variant="h5" color="#151515" mb={"10px"} fontSize={"24px"} fontWeight={"700"} textAlign={"center"}>
                     Sign in
                 </Typography>
-                <FormControl fullWidth error={errors.userName?.message ? true : false}>
+                <FormControl fullWidth error={errors.username?.message ? true : false}>
                     <FormLabel htmlFor='user-name' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Username</FormLabel>
-                    <OutlinedInput {...register("userName")} sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your name' id='user-name' size='small' />
-                    <FormHelperText sx={{ margin: 0, minHeight: "10px" }}>{errors.userName?.message}</FormHelperText>
+                    <OutlinedInput 
+                    {...register("username")} 
+                    autoComplete='username'
+                    sx={{ boxShadow: "0px 3px 22px 0px #3333330A" }} placeholder='Enter your name' id='user-name' size='small' />
+                    <FormHelperText sx={{ margin: 0, minHeight: "10px" }}>{errors.username?.message}</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth error={errors.password?.message ? true : false}>
                     <FormLabel htmlFor='password' sx={{ fontSize: "14px", color: "black", fontWeight: "500" }}>Password</FormLabel>
                     <OutlinedInput
                         {...register("password")}
+                        autoComplete='password'
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
