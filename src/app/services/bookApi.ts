@@ -1,15 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  image: string;
-  published: number;
-  pages: number;
-  status: 'new' | 'reading' | 'finished'; 
-  userId: string;
-}
+import type { IBook } from '../../utils/types/book.type';
 
 export const bookApi = createApi({
   reducerPath: 'bookApi',
@@ -25,34 +15,31 @@ export const bookApi = createApi({
   }),
   tagTypes: ['Books'],
   endpoints: (builder) => ({
-    getBooks: builder.query<Book[], void>({
+
+    getBooks: builder.query<IBook[], void>({
       query: () => '/get',
       providesTags: ['Books'],
     }),
-
-    getBookById: builder.query<Book, string>({
-      query: (id) => `/get-one/${id}`,
-    }),
-
-    createBook: builder.mutation<Book, Partial<Book>>({
-      query: (body) => ({
+    
+    createBook: builder.mutation<IBook, FormData>({
+      query: (formData) => ({
         url: '/add',
         method: 'POST',
-        body,
+        body: formData,
       }),
       invalidatesTags: ['Books'],
     }),
-
-    updateBook: builder.mutation<Book, { id: string; data: Partial<Book> }>({
-      query: ({ id, data }) => ({
+   
+    updateBook: builder.mutation<IBook, { id: string; formData: FormData }>({
+      query: ({ id, formData }) => ({
         url: `/edit/${id}`,
         method: 'PUT',
-        body: data,
+        body: formData,
       }),
       invalidatesTags: ['Books'],
     }),
 
-    deleteBook: builder.mutation<{ success: boolean }, string>({
+    deleteBook: builder.mutation<{ message: string }, string>({
       query: (id) => ({
         url: `/delete/${id}`,
         method: 'DELETE',
@@ -64,7 +51,7 @@ export const bookApi = createApi({
 
 export const {
   useGetBooksQuery,
-  useGetBookByIdQuery,
+  useLazyGetBooksQuery,
   useCreateBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,

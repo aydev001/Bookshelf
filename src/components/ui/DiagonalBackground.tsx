@@ -8,7 +8,7 @@ const DiagonalBackground = (): JSX.Element => {
         position: "fixed",
         top: "50px",
         right: {
-          xs : "25%",
+          xs : "32%",
           sm : "27%",
           md : "32%"
         },
@@ -16,7 +16,10 @@ const DiagonalBackground = (): JSX.Element => {
         height: "250vh",
         backgroundColor: "#333333",
         zIndex: "-1",
-        rotate: "30deg",
+        rotate: {
+          xs : "20deg",
+          sm : "30deg"
+        },
         transformOrigin: "top right",
         borderRadius: "30px"
       }}>

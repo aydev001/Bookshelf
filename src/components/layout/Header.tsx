@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import type { JSX } from 'react';
 import logo from "../../assets/images/logo.svg"
 import SearchInput from "../ui/SearchInput";
@@ -13,7 +13,7 @@ const Header = (): JSX.Element => {
                     <Box fontSize={"22px"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                         <img width={"30px"} height={"30px"} src={logo} alt="logo" />
                     </Box>
-                    <Box fontWeight={"800"} fontSize={"18px"}>Books <Typography fontWeight={"800"} fontSize={"16px"} component={"span"} color="white">List</Typography></Box>
+                    <Box fontWeight={"800"} fontSize={"18px"} sx={{textWrap : "nowrap"}}>Books <span style={{color : "white"}}>List</span></Box>
                 </Box>
                 <SearchInput />
             </Box>

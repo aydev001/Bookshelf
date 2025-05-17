@@ -7,6 +7,7 @@ import Container from '../components/layout/Container';
 import { useDispatch } from 'react-redux';
 import { useGetBooksQuery } from '../app/services/bookApi';
 import { setIsAuthenticated } from '../app/features/auth/auth.slice';
+import { setBooks } from '../app/features/book/book.slice';
 
 const MainLayout = (): JSX.Element => {
     const theme = createTheme({
@@ -25,13 +26,22 @@ const MainLayout = (): JSX.Element => {
 
     const dispatch = useDispatch()
     const token = localStorage.getItem('authToken');
-    const { isLoading, isError} = useGetBooksQuery(undefined, {skip : !token})
+
+    const { data, isLoading, isError} = useGetBooksQuery(undefined, { skip: !token })
 
     useEffect(() => {
-        if(token) {
-            dispatch(setIsAuthenticated(!isError))
+        if (token) {
+            if (data) {
+                dispatch(setIsAuthenticated(true));
+                dispatch(setBooks(data));
+            } else if (isError) {
+                dispatch(setIsAuthenticated(false));
+            }
+        } else {
+            dispatch(setIsAuthenticated(false));
+
         }
-    }, [isError])
+    }, [data, isError, token]);
 
     return (
         <ThemeProvider theme={theme}>
