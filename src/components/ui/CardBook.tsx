@@ -3,7 +3,6 @@ import type { JSX } from 'react';
 import type { IBook } from '../../utils/types/book.type';
 import DeleteBookModal from "./DeleteBookModal";
 import UpdateBookModal from "./UpdateBookModal";
-import { showErrorToast } from '../../utils/toast';
 
 interface ICardBookProps {
     bookData: IBook
